@@ -210,6 +210,9 @@ int main(int argc, char *args[])
 	int x, y;
 	float pitch = 0.f, yaw = 0.f;
 
+	glEnable(GL_DEPTH_TEST);
+
+
 	while (!quit) {
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_QUIT) {
