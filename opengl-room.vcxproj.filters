@@ -30,4 +30,9 @@
       <Filter>Archivos de origen</Filter>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Shader.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+  </ItemGroup>
 </Project>

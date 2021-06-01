@@ -56,8 +56,8 @@ int main(int argc, char *args[])
 
 	stbi_set_flip_vertically_on_load(true);
 
-	unsigned int textures[2];
-	glGenTextures(2, textures);
+	unsigned int textures[3];
+	glGenTextures(3, textures);
 
 	glBindTexture(GL_TEXTURE_2D, textures[0]);
 	int width, height, nrChannels;
@@ -65,7 +65,7 @@ int main(int argc, char *args[])
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	// set texture filtering parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	unsigned char *data = stbi_load("baldosa.jpg", &width, &height, &nrChannels, 0);
 	if (data)
@@ -84,12 +84,28 @@ int main(int argc, char *args[])
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	// set texture filtering parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	data = stbi_load("azulejo.png", &width, &height, &nrChannels, 0);
+	data = stbi_load("azulejo.jpg", &width, &height, &nrChannels, 0);
 	if (data)
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+
+	stbi_image_free(data);
+
+	glBindTexture(GL_TEXTURE_2D, textures[2]);
+	// set the texture wrapping parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	// set texture filtering parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	data = stbi_load("concrete.jpg", &width, &height, &nrChannels, 0);
+	if (data)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 
@@ -99,26 +115,47 @@ int main(int argc, char *args[])
 
 	float vertices[] = {
 		// floor
-		0.f, 0.f, 0.f, 0.f, 0.f,
-		10.f, 0.f, 0.f, 10.f, 0.f,
-		0.f, 0.f, -6.f, 0.f, 6.f,
-		10.f, 0.f, 0.f, 10.f, 0.f,
-		0.f, 0.f, -6.f, 0.f, 6.f,
-		10.f, 0.f, -6.f, 10.f, 6.f,
-		// wall
-		0.f, 0.f, 0.f, 0.f, 0.f,
-		10.f, 0.f, 0.f, 10.f, 0.f,
-		0.f, 3.f, 0.f, 0.f, 3.f,
-		10.f, 0.f, 0.f, 10.f, 0.f,
-		0.f, 3.f, 0.f, 0.f, 3.f,
-		10.f, 3.f, 0.f, 10.f, 3.f,
-
-		0.f, 0.f, -6.f, 0.f, 0.f,
-		10.f, 0.f, -6.f, 10.f, 0.f,
-		0.f, 3.f, -6.f, 0.f, 3.f,
-		10.f, 0.f, -6.f, 10.f, 0.f,
-		0.f, 3.f, -6.f, 0.f, 3.f,
-		10.f, 3.f, -6.f, 10.f, 3.f
+		0.f, 0.f, 0.f,		0.f, 0.f,		1.f, 0.f, 0.f,
+		10.f, 0.f, 0.f,		10.f, 0.f,		1.f, 0.f, 0.f,
+		0.f, 0.f, -6.f,		0.f, 6.f,		1.f, 0.f, 0.f,
+		10.f, 0.f, 0.f,		10.f, 0.f,		1.f, 0.f, 0.f,
+		0.f, 0.f, -6.f,		0.f, 6.f,		1.f, 0.f, 0.f,
+		10.f, 0.f, -6.f,	10.f, 6.f,		1.f, 0.f, 0.f,
+		// right wall
+		0.f, 0.f, 0.f,		0.f, 0.f,		0.f, 1.f, 0.f,
+		10.f, 0.f, 0.f,		20.f, 0.f,		0.f, 1.f, 0.f,
+		0.f, 3.f, 0.f,		0.f, 6.f,		0.f, 1.f, 0.f,
+		10.f, 0.f, 0.f,		20.f, 0.f,		0.f, 1.f, 0.f,
+		0.f, 3.f, 0.f,		0.f, 6.f,		0.f, 1.f, 0.f,
+		10.f, 3.f, 0.f,		20.f, 6.f,		0.f, 1.f, 0.f,
+		// left wall
+		0.f, 0.f, -6.f,		0.f, 0.f,		0.f, 1.f, 0.f,
+		10.f, 0.f, -6.f,	20.f, 0.f,		0.f, 1.f, 0.f,
+		0.f, 3.f, -6.f,		0.f, 6.f,		0.f, 1.f, 0.f,
+		10.f, 0.f, -6.f,	20.f, 0.f,		0.f, 1.f, 0.f,
+		0.f, 3.f, -6.f,		0.f, 6.f,		0.f, 1.f, 0.f,
+		10.f, 3.f, -6.f,	20.f, 6.f,		0.f, 1.f, 0.f,
+		// front wall
+		10.f, 0.f, 0.f,		0.f, 0.f,		0.f, 1.f, 0.f,
+		10.f, 0.f, -6.f,	12.f, 0.f,		0.f, 1.f, 0.f,
+		10.f, 3.f, 0.f,		0.f, 6.f,		0.f, 1.f, 0.f,
+		10.f, 0.f, -6.f,	12.f, 0.f,		0.f, 1.f, 0.f,
+		10.f, 3.f, 0.f,		0.f, 6.f,		0.f, 1.f, 0.f,
+		10.f, 3.f, -6.f,	12.f, 6.f,		0.f, 1.f, 0.f,
+		// back wall
+		0.f, 0.f, 0.f,		0.f, 0.f,		0.f, 1.f, 0.f,
+		0.f, 0.f, -6.f,		12.f, 0.f,		0.f, 1.f, 0.f,
+		0.f, 3.f, 0.f,		0.f, 6.f,		0.f, 1.f, 0.f,
+		0.f, 0.f, -6.f,		12.f, 0.f,		0.f, 1.f, 0.f,
+		0.f, 3.f, 0.f,		0.f, 6.f,		0.f, 1.f, 0.f,
+		0.f, 3.f, -6.f,		12.f, 6.f,		0.f, 1.f, 0.f,
+		// ceiling
+		0.f, 3.f, 0.f,		0.f, 0.f,		0.f, 0.f, 1.f,
+		10.f, 3.f, 0.f,		10.f, 0.f,		0.f, 0.f, 1.f,
+		0.f, 3.f, -6.f,		0.f, 6.f,		0.f, 0.f, 1.f,
+		10.f, 3.f, 0.f,		10.f, 0.f,		0.f, 0.f, 1.f,
+		0.f, 3.f, -6.f,		0.f, 6.f,		0.f, 0.f, 1.f,
+		10.f, 3.f, -6.f,	10.f, 6.f,		0.f, 0.f, 1.f,
 	};
 
 
@@ -146,15 +183,19 @@ int main(int argc, char *args[])
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)0);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *)(5 * sizeof(float)));
+	glEnableVertexAttribArray(2);
 
 
 	ourShader.use();
 	ourShader.setInt("texture1", 0);
 	ourShader.setInt("texture2", 1);
+	ourShader.setInt("texture3", 2);
+
 
 	int modelLoc = glGetUniformLocation(ourShader.ID, "model");
 	int viewLoc = glGetUniformLocation(ourShader.ID, "view");
@@ -236,6 +277,8 @@ int main(int argc, char *args[])
 		glBindTexture(GL_TEXTURE_2D, textures[0]);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, textures[1]);
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, textures[2]);
 		glBindVertexArray(VAO);
 
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
@@ -245,7 +288,7 @@ int main(int argc, char *args[])
 
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 
-		glDrawArrays(GL_TRIANGLES, 0, 18);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		SDL_GL_SwapWindow(window);
 	}
